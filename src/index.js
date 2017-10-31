@@ -31,9 +31,6 @@ module.exports = class {
     })
 
     Object.getPrototypeOf(this).$fields = _fields
-    console.log('----------')
-    console.log(this.$fields)
-    console.log('----------')
     Object.keys(this.$fields).forEach(fieldName => {
       this[fieldName] = this.$fields[fieldName].default || undefined
     })
