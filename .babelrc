@@ -1,3 +1,9 @@
 {
-  "presets": ["env"]
+  "presets": ["env"],
+  "env": {
+    "production": {
+      "presets": ["minify"]
+    }
+  },
+  "plugins": ["transform-es2015-modules-umd"]
 }
