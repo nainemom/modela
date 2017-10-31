@@ -13,8 +13,27 @@
 
 module.exports = class {
   constructor (fields = {}) {
-    Object.getPrototypeOf(this).$fields = fields
+    const _fields = {}
+    Object.keys(fields).forEach(fieldName => {
+      if (typeof fields[fieldName] !== 'undefined') {
+        switch (this._typeOf(fields[fieldName])) {
+        case 'array':
+        case 'string':
+          _fields[fieldName] = {
+            type: fields[fieldName]
+          }
+          break
+        case 'object':
+          _fields[fieldName] = fields[fieldName]
+          break
+        }
+      }
+    })
 
+    Object.getPrototypeOf(this).$fields = _fields
+    console.log('----------')
+    console.log(this.$fields)
+    console.log('----------')
     Object.keys(this.$fields).forEach(fieldName => {
       this[fieldName] = this.$fields[fieldName].default || undefined
     })
@@ -38,7 +57,7 @@ module.exports = class {
       errors: {}
     }
     Object.keys(this.$fields).forEach(fieldName => {
-      const types = typeof this.$fields[fieldName].type === 'undefined' ? [] : (this._typeOf(this.$fields[fieldName].type) === 'string' ? [this.$fields[fieldName].type] : this.$fields[fieldName].type)
+      const type = typeof this.$fields[fieldName].type === 'undefined' ? '' : this.$fields[fieldName].type
       const value = typeof this[fieldName] === 'undefined' ? undefined : this[fieldName]
       const validatorValue = typeof this.$fields[fieldName].validator === 'function' ? this.$fields[fieldName].validator(value) : true
 
@@ -48,7 +67,7 @@ module.exports = class {
       } else if (typeof this.$fields[fieldName].message === 'string') {
         errorMessage = this.$fields[fieldName].message
       }
-      if ((types.length > 0 && types.indexOf(this._typeOf(value)) === -1) || !validatorValue) {
+      if ((type.length > 0 && type.indexOf(this._typeOf(value)) === -1) || !validatorValue) {
         ret.result = false
         ret.errors[fieldName] = errorMessage || 'Illegal value!'
       }
