@@ -22,6 +22,16 @@ module.exports = class {
   _typeOf(obj) {
     return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
   }
+  $set(obj) {
+    Object.keys(this.$fields).forEach(fieldName => {
+      const defaultValue = typeof this.$fields[fieldName].default === 'undefined'? undefined: this.$fields[fieldName].default
+      if( typeof obj[fieldName] === 'undefined' ){
+        this[fieldName] = defaultValue
+      } else {
+        this[fieldName] = obj[fieldName]
+      }
+    });
+  }
   $check () {
     const ret = {
       result: true,
