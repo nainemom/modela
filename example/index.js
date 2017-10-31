@@ -1,6 +1,11 @@
 var Modela = require('../src')
 var a = new Modela;
 
+var b = {
+  name: 'amir',
+  abbas: 23
+}
+
 var xas = new Modela({
   name: {
     type: ['string'],
@@ -10,7 +15,7 @@ var xas = new Modela({
   family: {}
 })
 
-xas.name = 23;//':((((('
+xas.$set(b)
 
 console.log(xas)
 console.log(xas.$check())
