@@ -1,0 +1,40 @@
+{
+  "devDependencies": {
+    "babel-cli": "^6.26.0",
+    "babel-preset-env": "^1.6.1",
+    "cross-env": "^5.1.1",
+    "eslint": "^4.10.0",
+    "eslint-config-standard": "^10.2.1",
+    "eslint-plugin-import": "^2.8.0",
+    "eslint-plugin-node": "^5.2.1",
+    "eslint-plugin-promise": "^3.6.0",
+    "eslint-plugin-standard": "^3.0.1",
+    "nodemon": "^1.12.1",
+    "rimraf": "^2.6.2"
+  },
+  "name": "modela",
+  "description": "Javascript model library",
+  "version": "0.0.1",
+  "main": "dist/index.js",
+  "scripts": {
+    "lint": "eslint ./ -c ./.eslint.js --ignore-path ./.eslintignore",
+    "lint:fix": "eslint ./ -c ./.eslint.js --ignore-path ./.eslintignore --fix",
+    "test": "npm run lint",
+    "clean": "rimraf ./dist",
+    "build": "cross-env NODE_ENV=production babel src -d dist"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/nainemom/modela.git"
+  },
+  "keywords": [
+    "javascript",
+    "model"
+  ],
+  "author": "Nainemom <nainemom@gmail.com>",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/nainemom/modela/issues"
+  },
+  "homepage": "https://github.com/nainemom/modela#readme"
+}
