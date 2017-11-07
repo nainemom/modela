@@ -2,7 +2,7 @@ var Modela = require('../src')
 var a = new Modela;
 
 var b = {
-  name: 'amir',
+  name: 'salam chetori khubi dadash????',
   abbas: 23
 }
 
@@ -10,7 +10,7 @@ var xas = new Modela({
   name: {
     type: ['string'],
     validator: v => v.length > 10,
-    default: 'salam chetori khubi dadash????',
+    formatter: (v)=>`CLEANED: ${v}`,
   },
   family: {}
 })
@@ -22,4 +22,4 @@ console.log(xas.$check())
 console.log(xas.$clean())
 console.log(xas)
 // console.log(xas)
- console.log(xas.$check())
+ console.log(xas.$export())
