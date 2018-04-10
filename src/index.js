@@ -42,7 +42,7 @@ module.exports = class {
     Object.keys(this.$fields).forEach(fieldName => {
       const importer = typeof this.$fields[fieldName].importer === 'function' ? this.$fields[fieldName].importer : v => v
       if (typeof obj[fieldName] === 'undefined') {
-        this[fieldName] = importer(typeof this.$fields[fieldName].default === 'function' ? this.$fields[fieldName].default(undefined): this.$fields[fieldName].default)
+        this[fieldName] = importer(typeof this.$fields[fieldName].default === 'function' ? this.$fields[fieldName].default(undefined) : this.$fields[fieldName].default)
       } else {
         this[fieldName] = importer(obj[fieldName])
       }
@@ -77,7 +77,7 @@ module.exports = class {
   $clean () {
     let ret = true
     Object.keys(this.$check().errors).forEach(fieldName => {
-      const newValue = typeof this.$fields[fieldName].default === 'undefined' ? this[fieldName] : (typeof this.$fields[fieldName].default === 'function'? this.$fields[fieldName].default(this[fieldName]): this.$fields[fieldName].default)
+      const newValue = typeof this.$fields[fieldName].default === 'undefined' ? this[fieldName] : (typeof this.$fields[fieldName].default === 'function' ? this.$fields[fieldName].default(this[fieldName]) : this.$fields[fieldName].default)
       if (newValue === this[fieldName]) {
         ret = false
       } else {
@@ -86,7 +86,7 @@ module.exports = class {
     })
     return ret
   }
-  $export(){
+  $export () {
     let ret = {}
     Object.keys(this.$fields).forEach(fieldName => {
       ret[fieldName] = typeof this.$fields[fieldName].formatter === 'function' ? this.$fields[fieldName].formatter(this[fieldName]) : this[fieldName]
