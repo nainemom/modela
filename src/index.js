@@ -40,11 +40,11 @@ module.exports = class {
   }
   $set (obj) {
     Object.keys(this.$fields).forEach(fieldName => {
-      const defaultValue = typeof this.$fields[fieldName].default === 'undefined' ? undefined : this.$fields[fieldName].default
+      const importer = typeof this.$fields[fieldName].importer === 'function' ? this.$fields[fieldName].importer : v => v
       if (typeof obj[fieldName] === 'undefined') {
-        this[fieldName] = defaultValue
+        this[fieldName] = importer(typeof this.$fields[fieldName].default === 'function' ? this.$fields[fieldName].default(undefined): this.$fields[fieldName].default)
       } else {
-        this[fieldName] = obj[fieldName]
+        this[fieldName] = importer(obj[fieldName])
       }
     })
   }
@@ -54,6 +54,9 @@ module.exports = class {
       errors: {}
     }
     Object.keys(this.$fields).forEach(fieldName => {
+      if (typeof this.$fields[fieldName] === 'undefined') {
+        return
+      }
       const type = typeof this.$fields[fieldName].type === 'undefined' ? '' : this.$fields[fieldName].type
       const value = typeof this[fieldName] === 'undefined' ? undefined : this[fieldName]
       const validatorValue = typeof this.$fields[fieldName].validator === 'function' ? this.$fields[fieldName].validator(value) : true
