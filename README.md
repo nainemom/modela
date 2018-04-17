@@ -48,13 +48,14 @@ const user = new Modela({
     validator: v => ['agent', 'user', 'admin'].indexOf(v) > -1,
     default: 'user',
     importer: v => v.replace('role: ', '').trim(),
-    formatter: v => `role:${v}`,
+    formatter: v => `role: ${v}`,
     message: v => `role cannot be "${v}"! it should be one of agent, user or admin.`
   }
 })
 ```
 
 ### $set
+To assign javascript object to Modela created schema, use `$set` method.
 ```javascript
 const userObject = {
   username: 'n',
@@ -66,18 +67,20 @@ user.$set(userObject)
 ```
 
 ### $check
+To check validity of Modela object, use `$check` method.
 ```javascript
 const userCheck = user.$check()
 // userCheck = {
 //   result: false,
 //   errors: {
 //     username: 'Illegal value!',
-//     role: 'role cannot be "zeus"! it should be one of agent, user or admin.'
+//     role: 'role cannot be "zeus"! it should be one of "agent", "user" or "admin".'
 //   }
 // }
 })
 ```
 ### $clean
+To clean Modela object (replace illegal values by default value), use `$clean` method.
 ```javascript
 const userClean = user.$clean()
 // userClean = true
@@ -85,6 +88,7 @@ const userClean = user.$clean()
 ```
 
 ### $export
+To export Modela object to normal javascript object, use `$export` method.
 ```javascript
 const userExport = user.$export()
 // userExport = {
@@ -92,7 +96,7 @@ const userExport = user.$export()
 //   name: 'Amir Momenian',
 //   birthday: '1992-09-26T20:30:00.000Z',
 //   city: 'Tehran',
-//   role: 'role:user'
+//   role: 'role: user'
 // }
 })
 ```
