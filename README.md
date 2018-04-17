@@ -1,4 +1,4 @@
-# Stringz
+# Modela
 
 Javascript model library to work with objects.
 To create model objects and check validations.
