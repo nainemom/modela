@@ -13,40 +13,33 @@
 
 module.exports = class {
   constructor (fields = {}) {
-    const _fields = {}
+    const $fields = {}
     Object.keys(fields).forEach(fieldName => {
+      const $field = {}
       if (typeof fields[fieldName] !== 'undefined') {
-        switch (this._typeOf(fields[fieldName])) {
-        case 'array':
-        case 'string':
-          _fields[fieldName] = {
-            type: fields[fieldName]
-          }
-          break
-        case 'object':
-          _fields[fieldName] = fields[fieldName]
-          break
-        }
+        $field.type = fields[fieldName].type || []
+        $field.default = fields[fieldName].default || (v => v)
+        $field.formatter = fields[fieldName].formatter || (v => v)
+        $field.importer = fields[fieldName].importer || (v => v)
+        $field.message = fields[fieldName].message || (v => 'Illegal value!')
+        $field.validator = fields[fieldName].validator || (v => true)
+        $fields[fieldName] = $field
       }
     })
-
-    Object.getPrototypeOf(this).$fields = _fields
+    Object.getPrototypeOf(this).$fields = $fields
     Object.keys(this.$fields).forEach(fieldName => {
-      this[fieldName] = this.$fields[fieldName].default || undefined
+      this[fieldName] = undefined
     })
+    return this
   }
   _typeOf (obj) {
     return ({}).toString.call(obj).match(/\s([a-zA-Z]+)/)[1].toLowerCase()
   }
   $set (obj) {
     Object.keys(this.$fields).forEach(fieldName => {
-      const importer = typeof this.$fields[fieldName].importer === 'function' ? this.$fields[fieldName].importer : v => v
-      if (typeof obj[fieldName] === 'undefined') {
-        this[fieldName] = importer(typeof this.$fields[fieldName].default === 'function' ? this.$fields[fieldName].default(undefined) : this.$fields[fieldName].default)
-      } else {
-        this[fieldName] = importer(obj[fieldName])
-      }
+      this[fieldName] = this.$fields[fieldName].importer(obj[fieldName], this)
     })
+    return this
   }
   $check () {
     const ret = {
@@ -57,39 +50,25 @@ module.exports = class {
       if (typeof this.$fields[fieldName] === 'undefined') {
         return
       }
-      const type = typeof this.$fields[fieldName].type === 'undefined' ? '' : this.$fields[fieldName].type
       const value = typeof this[fieldName] === 'undefined' ? undefined : this[fieldName]
-      const validatorValue = typeof this.$fields[fieldName].validator === 'function' ? this.$fields[fieldName].validator(value) : true
-
-      let errorMessage
-      if (typeof this.$fields[fieldName].message === 'function') {
-        errorMessage = this.$fields[fieldName].message(value)
-      } else if (typeof this.$fields[fieldName].message === 'string') {
-        errorMessage = this.$fields[fieldName].message
-      }
-      if ((type.length > 0 && type.indexOf(this._typeOf(value)) === -1) || !validatorValue) {
+      const validatorValue = this.$fields[fieldName].validator(value, this)
+      if ((this.$fields[fieldName].type.length > 0 && this.$fields[fieldName].type.indexOf(this._typeOf(value)) === -1) || validatorValue === false) {
         ret.result = false
-        ret.errors[fieldName] = errorMessage || 'Illegal value!'
+        ret.errors[fieldName] = this.$fields[fieldName].message(value, this)
       }
     })
     return ret
   }
   $clean () {
-    let ret = true
     Object.keys(this.$check().errors).forEach(fieldName => {
-      const newValue = typeof this.$fields[fieldName].default === 'undefined' ? this[fieldName] : (typeof this.$fields[fieldName].default === 'function' ? this.$fields[fieldName].default(this[fieldName]) : this.$fields[fieldName].default)
-      if (newValue === this[fieldName]) {
-        ret = false
-      } else {
-        this[fieldName] = newValue
-      }
+      this[fieldName] = this.$fields[fieldName].default(this[fieldName], this)
     })
-    return ret
+    return this
   }
   $export () {
     let ret = {}
     Object.keys(this.$fields).forEach(fieldName => {
-      ret[fieldName] = typeof this.$fields[fieldName].formatter === 'function' ? this.$fields[fieldName].formatter(this[fieldName]) : this[fieldName]
+      ret[fieldName] = this.$fields[fieldName].formatter(this[fieldName], this)
     })
     return ret
   }
