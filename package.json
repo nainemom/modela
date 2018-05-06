@@ -16,7 +16,7 @@
   },
   "name": "modela",
   "description": "Javascript model library",
-  "version": "0.3.0",
+  "version": "0.3.1",
   "main": "dist/index.js",
   "scripts": {
     "lint": "eslint ./ -c ./.eslint.js --ignore-path ./.eslintignore",
