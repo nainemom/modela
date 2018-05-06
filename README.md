@@ -33,20 +33,24 @@ var Modela = require('modela');
 ```javascript
 const user = new Modela({
   username: {
-    type: 'string',
+    type: ['string'],
     validator: v => v.length >= 4,
     default: v => v + 'x'.repeat(4-v.length)
   },
-  name: ['string', 'undefined'],
-  birthday: 'date',
+  name: {
+    type: ['string', 'undefined']
+  },
+  birthday: {
+    type: ['date', 'undefined']
+  },
   city: {
-    type: 'string',
-    default: 'Tehran'
+    type: ['string'],
+    default: v => 'Tehran'
   },
   role: {
-    type: 'string',
+    type: ['string'],
     validator: v => ['agent', 'user', 'admin'].indexOf(v) > -1,
-    default: 'user',
+    default: v => 'user',
     importer: v => v.replace('role: ', '').trim(),
     formatter: v => `role: ${v}`,
     message: v => `role cannot be "${v}"! it should be one of agent, user or admin.`
