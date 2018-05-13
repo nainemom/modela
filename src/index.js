@@ -11,7 +11,7 @@
   "symbol"
 */
 
-module.exports = class {
+module.exports = class Modela {
   constructor (fields = {}) {
     const $fields = {}
     Object.keys(fields).forEach(fieldName => {
@@ -26,7 +26,7 @@ module.exports = class {
         $fields[fieldName] = $field
       }
     })
-    Object.getPrototypeOf(this).$fields = $fields
+    this.$fields = $fields
     Object.keys(this.$fields).forEach(fieldName => {
       this[fieldName] = undefined
     })
@@ -47,9 +47,6 @@ module.exports = class {
       errors: {}
     }
     Object.keys(this.$fields).forEach(fieldName => {
-      if (typeof this.$fields[fieldName] === 'undefined') {
-        return
-      }
       const value = typeof this[fieldName] === 'undefined' ? undefined : this[fieldName]
       const validatorValue = this.$fields[fieldName].validator(value, this)
       if ((this.$fields[fieldName].type.length > 0 && this.$fields[fieldName].type.indexOf(this._typeOf(value)) === -1) || validatorValue === false) {
